@@ -20,10 +20,10 @@ main() {
     router.root.addRoute(
         name: 'foo',
         path: '/foo',
-        enter: expectAsync((RouteEvent e) {
+        enter: expectAsync1((RouteEvent e) {
           expect(e.path, '/foo');
           expect(router.root.findRoute('foo').isActive, isTrue);
-        }) as RouteEnterEventHandler);
+        }));
     return router.route('/foo');
   });
 
@@ -35,10 +35,10 @@ main() {
         ..addRoute(
           name: 'foobar',
           path: '/foo/bar',
-          enter: expectAsync((RouteEvent e) {
+          enter: expectAsync1((RouteEvent e) {
             expect(e.path, '/foo/bar');
             expect(router.root.findRoute('foobar').isActive, isTrue);
-          }) as RouteEnterEventHandler)
+          }))
         ..addRoute(
           name: 'foo',
           path: '/foo',
@@ -56,10 +56,10 @@ main() {
         ..addRoute(
           name: 'foobar',
           path: '/foo/bar',
-          enter: expectAsync((RouteEvent e) {
+          enter: expectAsync1((RouteEvent e) {
             expect(e.path, '/foo/bar');
             expect(router.root.findRoute('foobar').isActive, isTrue);
-          }) as RouteEnterEventHandler);
+          }));
       return router.route('/foo/bar');
     });
 
@@ -73,10 +73,10 @@ main() {
         ..addRoute(
           name: 'fooparam',
           path: '/foo/:param',
-          enter: expectAsync((RouteEvent e) {
+          enter: expectAsync1((RouteEvent e) {
             expect(e.path, '/foo/bar');
             expect(router.root.findRoute('fooparam').isActive, isTrue);
-          }) as RouteEnterEventHandler);
+          }));
       return router.route('/foo/bar');
     });
 
@@ -86,10 +86,10 @@ main() {
         ..addRoute(
           name: 'paramaddress',
           path: '/:zzzzzz/address',
-          enter: expectAsync((RouteEvent e) {
+          enter: expectAsync1((RouteEvent e) {
             expect(e.path, '/foo/address');
             expect(router.root.findRoute('paramaddress').isActive, isTrue);
-          }) as RouteEnterEventHandler)
+          }))
         ..addRoute(
           name: 'param_add',
           path: '/:aaaaaa/add',
@@ -103,10 +103,10 @@ main() {
         ..addRoute(
           name: 'fooparam',
           path: '/:param/foo',
-          enter: expectAsync((RouteEvent e) {
+          enter: expectAsync1((RouteEvent e) {
             expect(e.path, '/bar/foo');
             expect(router.root.findRoute('fooparam').isActive, isTrue);
-          }) as RouteEnterEventHandler)
+          }))
         ..addRoute(
           name: 'bar',
           path: '/bar',
@@ -124,10 +124,10 @@ main() {
         ..addRoute(
           name: 'barfoo',
           path: '/bar/foo',
-          enter: expectAsync((RouteEvent e) {
+          enter: expectAsync1((RouteEvent e) {
             expect(e.path, '/bar/foo');
             expect(router.root.findRoute('barfoo').isActive, isTrue);
-          }) as RouteEnterEventHandler)
+          }))
         ;
       return router.route('/bar/foo');
     });
@@ -142,10 +142,10 @@ main() {
         ..addRoute(
           name: 'bazbarfoo',
           path: '/baz/bar/foo',
-          enter: expectAsync((RouteEvent e) {
+          enter: expectAsync1((RouteEvent e) {
             expect(e.path, '/baz/bar/foo');
             expect(router.root.findRoute('bazbarfoo').isActive, isTrue);
-          }) as RouteEnterEventHandler)
+          }))
         ;
       return router.route('/baz/bar/foo');
     });
@@ -160,10 +160,10 @@ main() {
         ..addRoute(
           name: 'bazparamfoo',
           path: '/baz/:param/foo',
-          enter: expectAsync((RouteEvent e) {
+          enter: expectAsync1((RouteEvent e) {
             expect(e.path, '/baz/bar/foo');
             expect(router.root.findRoute('bazparamfoo').isActive, isTrue);
-          }) as RouteEnterEventHandler)
+          }))
         ;
       return router.route('/baz/bar/foo');
     });
@@ -178,10 +178,10 @@ main() {
         ..addRoute(
           name: 'param1barfoo',
           path: '/:param1/bar/foo',
-          enter: expectAsync((RouteEvent e) {
+          enter: expectAsync1((RouteEvent e) {
             expect(e.path, '/baz/bar/foo');
             expect(router.root.findRoute('param1barfoo').isActive, isTrue);
-          }) as RouteEnterEventHandler)
+          }))
         ;
       return router.route('/baz/bar/foo');
     });
@@ -199,18 +199,18 @@ main() {
       router.root.addRoute(
           name: 'parent',
           path: parentPath,
-          enter: expectAsync((RouteEvent e) {
+          enter: expectAsync1((RouteEvent e) {
             expect(e.path, expectedParentPath);
             expect(e.route, isNotNull);
             expect(e.route.name, 'parent');
-          }) as RouteEnterEventHandler,
+          }),
           mount: (Route child) {
             child.addRoute(
                 name: 'child',
                 path: childPath,
-                enter: expectAsync((RouteEvent e) {
+                enter: expectAsync1((RouteEvent e) {
                   expect(e.path, expectedChildPath);
-                }) as RouteEnterEventHandler);
+                }));
           });
       router.route(testPath);
     }
@@ -503,7 +503,7 @@ main() {
         'bazEnter': 0,
         'bazLeave': 0
       });
-      router.route('/foo/bar').then(expectAsync((_) {
+      router.route('/foo/bar').then(expectAsync1((_) {
         expect(counters, {
           'fooPreEnter': 1,
           'fooPreLeave': 0,
@@ -518,8 +518,8 @@ main() {
           'bazEnter': 0,
           'bazLeave': 0
         });
-      })).then(expectAsync((_) =>
-        router.route('/foo/baz').then(expectAsync((_) {
+      })).then(expectAsync1((_) =>
+        router.route('/foo/baz').then(expectAsync1((_) {
           expect(counters, {
             'fooPreEnter': 1,
             'fooPreLeave': 0,
@@ -535,8 +535,8 @@ main() {
             'bazLeave': 0
           });
         }))
-      )).then(expectAsync((_) =>
-        router.route('/foo/baz?baz.blah=meme').then(expectAsync((_) {
+      )).then(expectAsync1((_) =>
+        router.route('/foo/baz?baz.blah=meme').then(expectAsync1((_) {
           expect(counters, {
             'fooPreEnter': 1,
             'fooPreLeave': 0,
@@ -576,10 +576,10 @@ main() {
                         leave: loggingLeaveHandler)));
 
 
-      router.route('/foo/bar/baz').then(expectAsync((_) {
+      router.route('/foo/bar/baz').then(expectAsync1((_) {
         expect(log, []);
 
-        router.route('').then(expectAsync((_) {
+        router.route('').then(expectAsync1((_) {
           expect(log, ['baz', 'bar', 'foo']);
         }));
       }));
@@ -617,10 +617,10 @@ main() {
               ..addRoute(name: 'baz', path: '/baz',
                   enter: (RouteEnterEvent e) => bazEntered = true));
 
-      router.route('/foo/bar').then(expectAsync((_) {
+      router.route('/foo/bar').then(expectAsync1((_) {
         expect(barEntered, true);
         expect(bazEntered, false);
-        router.route('/foo/baz').then(expectAsync((_) {
+        router.route('/foo/baz').then(expectAsync1((_) {
           expect(bazEntered, allowLeave);
         }));
         completer.complete(allowLeave);
@@ -651,7 +651,7 @@ main() {
                   preEnter: (RoutePreEnterEvent e) =>
                       e.allowEnter(completer.future)));
 
-      router.route('/foo/bar').then(expectAsync((_) {
+      router.route('/foo/bar').then(expectAsync1((_) {
         expect(barEntered, allowEnter);
       }));
       completer.complete(allowEnter);
@@ -704,7 +704,7 @@ main() {
 
       expect(router.findRoute('foo').dontLeaveOnParamChanges, false);
 
-      router.route('/foo/bar').then(expectAsync((_) {
+      router.route('/foo/bar').then(expectAsync1((_) {
         expect(counters, {
           'fooPreEnter': 1, // +1
           'fooPreLeave': 0,
@@ -716,7 +716,7 @@ main() {
           'barLeave': 0
         });
 
-        router.route('/foo/bar').then(expectAsync((_) {
+        router.route('/foo/bar').then(expectAsync1((_) {
           expect(counters, {
             'fooPreEnter': 1,
             'fooPreLeave': 0,
@@ -728,7 +728,7 @@ main() {
             'barLeave': 0
           });
 
-          router.route('/foo/baz').then(expectAsync((_) {
+          router.route('/foo/baz').then(expectAsync1((_) {
             expect(counters, {
               'fooPreEnter': 2, // +1
               'fooPreLeave': 1, // +1
@@ -740,7 +740,7 @@ main() {
               'barLeave': 0
             });
 
-            router.route('/bar').then(expectAsync((_) {
+            router.route('/bar').then(expectAsync1((_) {
               expect(counters, {
                 'fooPreEnter': 2,
                 'fooPreLeave': 2, // +1
@@ -795,7 +795,7 @@ main() {
         'barLeave': 0
       });
 
-      router.route('/foo/bar').then(expectAsync((_) {
+      router.route('/foo/bar').then(expectAsync1((_) {
         expect(counters, {
           'fooPreEnter': 1, // +1
           'fooPreLeave': 0,
@@ -807,7 +807,7 @@ main() {
           'barLeave': 0
         });
 
-        router.route('/foo/bar').then(expectAsync((_) {
+        router.route('/foo/bar').then(expectAsync1((_) {
           expect(counters, {
             'fooPreEnter': 1,
             'fooPreLeave': 0,
@@ -819,7 +819,7 @@ main() {
             'barLeave': 0
           });
 
-          router.route('/foo/baz').then(expectAsync((_) {
+          router.route('/foo/baz').then(expectAsync1((_) {
             expect(counters, {
               'fooPreEnter': 2, // +1
               'fooPreLeave': 0,
@@ -831,7 +831,7 @@ main() {
               'barLeave': 0
             });
 
-            router.route('/bar').then(expectAsync((_) {
+            router.route('/bar').then(expectAsync1((_) {
               expect(counters, {
                 'fooPreEnter': 2,
                 'fooPreLeave': 1, // +1
@@ -888,7 +888,7 @@ main() {
           'barLeave': 0
       });
 
-      router.route('/foo').then(expectAsync((_) {
+      router.route('/foo').then(expectAsync1((_) {
         expect(counters, {
             'fooPreEnter': 1, // +1
             'fooPreLeave': 0,
@@ -900,7 +900,7 @@ main() {
             'barLeave': 0
         });
 
-        router.route('/bar').then(expectAsync((_) {
+        router.route('/bar').then(expectAsync1((_) {
           expect(counters, {
               'fooPreEnter': 1,
               'fooPreLeave': 1, // +1
@@ -926,15 +926,15 @@ main() {
             name: 'foo',
             path: '/foo',
             defaultRoute: true,
-            enter: expectAsync((RouteEvent e) {
+            enter: expectAsync1((RouteEvent e) {
               expect(e.path, expectFoo);
-            }) as RouteEnterEventHandler,
+            }),
             mount: (child) => child
               ..addRoute(
                   name: 'bar',
                   path: '/bar',
                   defaultRoute: true,
-                  enter: expectAsync((RouteEvent e) =>
+                  enter: expectAsync1((RouteEvent e) =>
                       expect(e.path, expectBar))));
 
       router.route(path);
@@ -1036,24 +1036,28 @@ main() {
 
   group('go', () {
 
+    tearDown(() {
+      resetMockitoState();
+    });
+
     test('should use location.assign/.replace when useFragment=true', () {
       var mockWindow = new MockWindow();
       var router = new Router(useFragment: true, windowImpl: mockWindow);
       router.root.addRoute(name: 'articles', path: '/articles');
 
-      router.go('articles', {}).then(expectAsync((_) {
+      router.go('articles', {}).then(expectAsync1((_) {
         var mockLocation = mockWindow.location;
 
-        var result = verify(mockLocation.assign(captureAny));
+        var result = verify(mockLocation.assign(typed<String>(captureAny)));
         result.called(1);
         expect(result.captured.first, '#/articles');
-        verifyNever(mockLocation.replace(any));
+        verifyNever(mockLocation.replace(typed<String>(any)));
 
-        router.go('articles', {}, replace: true).then(expectAsync((_) {
-          var result = verify(mockLocation.replace(captureAny));
+        router.go('articles', {}, replace: true).then(expectAsync1((_) {
+          var result = verify(mockLocation.replace(typed<String>(captureAny)));
           result.called(1);
           expect(result.captured.first, '#/articles');
-          verifyNever(mockLocation.assign(any));
+          verifyNever(mockLocation.assign(typed<String>(any)));
         }));
       }));
     });
@@ -1065,19 +1069,19 @@ main() {
       when((mockWindow.document as HtmlDocument).title)
           .thenReturn('page title');
 
-      router.go('articles', {}).then(expectAsync((_) {
+      router.go('articles', {}).then(expectAsync1((_) {
         var mockHistory = mockWindow.history;
 
-        var result = verify(mockHistory.pushState(captureAny, captureAny, captureAny));
+        var result = verify(mockHistory.pushState(captureAny, typed<String>(captureAny), typed<String>(captureAny)));
         result.called(1);
         expect(result.captured, [null, 'page title', '/articles']);
-        verifyNever(mockHistory.replaceState(any, any, any));
+        verifyNever(mockHistory.replaceState(any, typed<String>(any), typed<String>(any)));
 
-        router.go('articles', {}, replace: true).then(expectAsync((_) {
-          var result = verify(mockHistory.replaceState(captureAny, captureAny, captureAny));
+        router.go('articles', {}, replace: true).then(expectAsync1((_) {
+          var result = verify(mockHistory.replaceState(captureAny, typed<String>(captureAny), typed<String>(captureAny)));
           result.called(1);
           expect(result.captured, [null, 'page title', '/articles']);
-          verifyNever(mockHistory.pushState(any, any, any));
+          verifyNever(mockHistory.pushState(any, typed<String>(any), typed<String>(any)));
         }));
       }));
     });
@@ -1091,13 +1095,13 @@ main() {
 
       var queryParams = {'foo': 'foo bar', 'bar': '%baz+aux'};
       router.go('articles', {},
-          queryParameters: queryParams).then(expectAsync((_) {
+          queryParameters: queryParams).then(expectAsync1((_) {
         var mockHistory = mockWindow.history;
 
-        var result = verify(mockHistory.pushState(captureAny, captureAny, captureAny));
+        var result = verify(mockHistory.pushState(captureAny, typed<String>(captureAny), typed<String>(captureAny)));
         result.called(1);
         expect(result.captured, [null, 'page title', '/articles?foo=foo%20bar&bar=%25baz%2Baux']);
-        verifyNever(mockHistory.replaceState(any, any, any));
+        verifyNever(mockHistory.replaceState(any, typed<String>(any), typed<String>(any)));
       }));
     });
 
@@ -1117,21 +1121,21 @@ main() {
 
       var routeA = router.root.findRoute('a');
 
-      router.go('a.b', {}).then(expectAsync((_) {
+      router.go('a.b', {}).then(expectAsync1((_) {
         var mockHistory = mockWindow.history;
 
-        var result = verify(mockHistory.pushState(captureAny, captureAny, captureAny));
+        var result = verify(mockHistory.pushState(captureAny, typed<String>(captureAny), typed<String>(captureAny)));
         result.called(1);
         expect(result.captured, [null, 'page title', '/null/null']);
 
-        router.go('a.b', {'foo': 'aaaa', 'bar': 'bbbb'}).then(expectAsync((_) {
-          var result = verify(mockHistory.pushState(captureAny, captureAny, captureAny));
+        router.go('a.b', {'foo': 'aaaa', 'bar': 'bbbb'}).then(expectAsync1((_) {
+          var result = verify(mockHistory.pushState(captureAny, typed<String>(captureAny), typed<String>(captureAny)));
           result .called(1);
           expect(result.captured, [null, 'page title', '/aaaa/bbbb']);
 
           router.go('b', {'bar': 'bbbb'}, startingFrom: routeA)
-              .then(expectAsync((_) {
-                var result = verify(mockHistory.pushState(captureAny, captureAny, captureAny));
+              .then(expectAsync1((_) {
+                var result = verify(mockHistory.pushState(captureAny, typed<String>(captureAny), typed<String>(captureAny)));
                 // Note: These were cumulative with mock but get reset with each
                 // call to mockito.verify(), so 3 became 1 here.
                 result.called(1);
@@ -1181,8 +1185,8 @@ main() {
         return router.go('b', {'bar': 'bbb'}, startingFrom: routeA).then((_) {
           var mockHistory = mockWindow.history;
 
-          var result = verify(mockHistory.pushState(captureAny, captureAny,
-              captureAny));
+          var result = verify(mockHistory.pushState(typed<String>(captureAny), typed<String>(captureAny),
+              typed<String>(captureAny)));
           result.called(1);
           expect(result.captured, [null, 'page title', '/null/bbb']);
         });
@@ -1241,9 +1245,9 @@ main() {
       var router = new Router(useFragment: false, windowImpl: mockWindow);
       router.root.addRoute(name: 'foo', path: '/foo', pageTitle: 'Foo');
 
-      router.go('foo', {}).then(expectAsync((_) {
+      router.go('foo', {}).then(expectAsync1((_) {
         var mockHistory = mockWindow.history;
-        verify((mockWindow.document as HtmlDocument).title=any).called(1);
+        verify((mockWindow.document as HtmlDocument).title=typed<String>(any)).called(1);
         verify(mockHistory.pushState(null, 'Foo', '/foo')).called(1);
       }));
     });
@@ -1255,7 +1259,7 @@ main() {
       var router = new Router(useFragment: false, windowImpl: mockWindow);
       router.root.addRoute(name: 'foo', path: '/foo');
 
-      router.go('foo', {}).then(expectAsync((_) {
+      router.go('foo', {}).then(expectAsync1((_) {
         var mockHistory = mockWindow.history;
         verify(mockHistory.pushState(null, 'page title', '/foo')).called(1);
       }));
@@ -1357,7 +1361,7 @@ main() {
           ..addRoute(
               name: 'foo',
               path: '/:foo',
-              enter: expectAsync((RouteEvent e) {
+              enter: expectAsync1((RouteEvent e) {
                 expect(e.parameters, {
                   'foo': '123',
                 });
@@ -1366,7 +1370,7 @@ main() {
                   'b': '',
                   'c': 'foo bar'
                 });
-              }) as RouteEnterEventHandler);
+              }));
 
         router.route('/123?a=b&b=&c=foo%20bar');
       });
@@ -1694,8 +1698,8 @@ main() {
         when(mockWindow.location.hash).thenReturn('#/foo');
         var router = new Router(useFragment: true, windowImpl: mockWindow);
         router.root.addRoute(name: 'foo', path: '/foo');
-        router.onRouteStart.listen(expectAsync((RouteStartEvent start) {
-          start.completed.then(expectAsync((_) {
+        router.onRouteStart.listen(expectAsync1((RouteStartEvent start) {
+          start.completed.then(expectAsync1((_) {
             expect(router.findRoute('foo').isActive, isTrue);
           }));
         }, count: 1));
@@ -1712,8 +1716,8 @@ main() {
         when(mockWindow.location.search).thenReturn('?foo=bar&baz=bat');
         var router = new Router(useFragment: false, windowImpl: mockWindow);
         router.root.addRoute(name: 'hello', path: '/hello');
-        router.onRouteStart.listen(expectAsync((RouteStartEvent start) {
-          start.completed.then(expectAsync((_) {
+        router.onRouteStart.listen(expectAsync1((RouteStartEvent start) {
+          start.completed.then(expectAsync1((_) {
             expect(router.findRoute('hello').isActive, isTrue);
             expect(router.findRoute('hello').queryParameters['baz'], 'bat');
             expect(router.findRoute('hello').queryParameters['foo'], 'bar');
@@ -1722,9 +1726,9 @@ main() {
         router.listen(ignoreClick: true);
       }
 
-      test('shoud route current path on listen with pop', () {
+      test('should route current path on listen with pop', () {
         var mockWindow = new MockWindow();
-        var mockPopStateController = new StreamController<Event>(sync: true);
+        var mockPopStateController = new StreamController<PopStateEvent>(sync: true);
         when(mockWindow.onPopState).thenReturn(mockPopStateController.stream);
         testInit(mockWindow, 2);
         mockPopStateController.add(null);
@@ -1732,7 +1736,7 @@ main() {
 
       test('shoud route current path on listen without pop', () {
         var mockWindow = new MockWindow();
-        var mockPopStateController = new StreamController<Event>(sync: true);
+        var mockPopStateController = new StreamController<PopStateEvent>(sync: true);
         when(mockWindow.onPopState).thenReturn(mockPopStateController.stream);
         testInit(mockWindow);
       });
@@ -1765,7 +1769,7 @@ main() {
         var router = new Router(useFragment: true, windowImpl: mockWindow);
         router.listen(appRoot: anchor);
 
-        router.onRouteStart.listen(expectAsync((RouteStartEvent e) {
+        router.onRouteStart.listen(expectAsync1((RouteStartEvent e) {
           expect(e.uri, 'test1');
         }, max: 2));
 
@@ -1789,7 +1793,7 @@ main() {
         var router = new Router(useFragment: true, windowImpl: mockWindow);
         router.listen(appRoot: anchor);
 
-        router.onRouteStart.listen(expectAsync((RouteStartEvent e) {
+        router.onRouteStart.listen(expectAsync1((RouteStartEvent e) {
           expect(e.uri, 'test2');
         }, max: 2));
 

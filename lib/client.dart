@@ -538,7 +538,7 @@ class Router {
    */
   Future<bool> _preLeave(String path, List<_Match> treePath,
       List<RouteImpl> activePath, RouteImpl baseRoute, bool forceReload) {
-    var mustLeave = activePath;
+    Iterable<RouteImpl> mustLeave = activePath;
     var leaveBase = baseRoute;
     for (var i = 0, ll = min(activePath.length, treePath.length); i < ll; i++) {
       if (mustLeave.first == treePath[i].route &&
@@ -559,7 +559,7 @@ class Router {
       toLeave._onPreLeaveController.add(event);
       preLeaving.addAll(event._allowLeaveFutures);
     });
-    return Future.wait(preLeaving).then/*<Future<bool>>*/((List<bool> results) {
+    return Future.wait(preLeaving).then<bool>((List<bool> results) {
       if (!results.any((r) => r == false)) {
         var leaveFn = () => _leave(mustLeave, leaveBase);
         return _preEnter(path, treePath, activePath, baseRoute, leaveFn,
@@ -589,7 +589,7 @@ class Router {
   Future<bool> _preEnter(String path, List<_Match> treePath,
       List<Route> activePath, RouteImpl baseRoute, Function leaveFn,
       bool forceReload) {
-    var toEnter = treePath;
+    Iterable<_Match> toEnter = treePath;
     var tail = path;
     var enterBase = baseRoute;
     for (var i = 0, ll = min(toEnter.length, activePath.length); i < ll; i++) {
@@ -613,7 +613,7 @@ class Router {
       matchedRoute.route._onPreEnterController.add(preEnterEvent);
       preEnterFutures.addAll(preEnterEvent._allowEnterFutures);
     });
-    return Future.wait(preEnterFutures).then/*<Future<bool>>*/((List<bool> results) {
+    return Future.wait(preEnterFutures).then<bool>((List<bool> results) {
       if (!results.any((v) => v == false)) {
         leaveFn();
         _enter(enterBase, toEnter, tail);

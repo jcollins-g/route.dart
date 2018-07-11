@@ -5,7 +5,7 @@ import 'dart:html';
 import 'link_matcher.dart';
 import 'client.dart';
 
-typedef String _HashNormalizer(String);
+typedef String _HashNormalizer(String s);
 
 /**
  * WindowClickHandler can be used as a hook into [Router] to

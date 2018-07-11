@@ -24,9 +24,7 @@ class MockDocument extends Mock implements HtmlDocument {
 }
 
 class MockMouseEvent extends Mock implements MouseEvent {
-
 }
 
 class MockRouter extends Mock implements Router {
-
 }

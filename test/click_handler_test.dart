@@ -20,12 +20,12 @@ main() {
     StreamController onHashChangeController;
 
     setUp(() {
-      router = new MockRouter();
       mockWindow = new MockWindow();
+      onHashChangeController = new StreamController<Event>();
       when(mockWindow.location.host).thenReturn(window.location.host);
       when(mockWindow.location.hash).thenReturn('');
-      onHashChangeController = new StreamController();
       when(mockWindow.onHashChange).thenReturn(onHashChangeController.stream);
+      router = new MockRouter();
       root = new DivElement();
       document.body.append(root);
       linkHandler = new DefaultWindowClickHandler(new DefaultRouterLinkMatcher(), router, true, mockWindow,
@@ -33,6 +33,7 @@ main() {
     });
 
     tearDown(() {
+      resetMockitoState();
       root.remove();
     });
 
@@ -50,7 +51,7 @@ main() {
     test('should process AnchorElements which have target set', () {
       MockMouseEvent mockMouseEvent = _createMockMouseEvent(anchorHref: '#test');
       linkHandler(mockMouseEvent);
-      var result = verify(router.gotoUrl(captureAny));
+      var result = verify(router.gotoUrl(typed<String>(captureAny)));
       result.called(1);
       expect(result.captured.first, "test");
     });
@@ -73,7 +74,7 @@ main() {
       linkHandler(mockMouseEvent);
 
       // We expect 0 calls to router.gotoUrl
-      verifyNever(router.gotoUrl(any));
+      verifyNever(router.gotoUrl(typed<String>(any)));
     });
 
     test('should process AnchorElements which has a child', () {
@@ -88,7 +89,7 @@ main() {
       when(mockMouseEvent.path).thenReturn([anchorChild, anchor]);
 
       linkHandler(mockMouseEvent);
-      var result = verify(router.gotoUrl(captureAny));
+      var result = verify(router.gotoUrl(typed<String>(captureAny)));
       result.called(1);
       expect(result.captured.first, "test");
     });
@@ -104,7 +105,6 @@ main() {
 //          clickHandler: expectAsync((e) {}) as WindowClickHandler,
           windowImpl: mockWindow);
       router.listen(appRoot: root);
-
       // Trigger handle method in linkHandler
       anchor.dispatchEvent(new MouseEvent('click'));
     });
