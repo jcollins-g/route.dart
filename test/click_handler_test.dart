@@ -12,7 +12,6 @@ import 'util/mocks.dart';
 
 main() {
   group('DefaultWindowLinkHandler', () {
-
     WindowClickHandler linkHandler;
     MockRouter router;
     MockWindow mockWindow;
@@ -28,7 +27,11 @@ main() {
       router = new MockRouter();
       root = new DivElement();
       document.body.append(root);
-      linkHandler = new DefaultWindowClickHandler(new DefaultRouterLinkMatcher(), router, true, mockWindow,
+      linkHandler = new DefaultWindowClickHandler(
+          new DefaultRouterLinkMatcher(),
+          router,
+          true,
+          mockWindow,
           (String hash) => hash.isEmpty ? '' : hash.substring(1));
     });
 
@@ -49,28 +52,31 @@ main() {
     }
 
     test('should process AnchorElements which have target set', () {
-      MockMouseEvent mockMouseEvent = _createMockMouseEvent(anchorHref: '#test');
+      MockMouseEvent mockMouseEvent =
+          _createMockMouseEvent(anchorHref: '#test');
       linkHandler(mockMouseEvent);
       var result = verify(router.gotoUrl(typed<String>(captureAny)));
       result.called(1);
       expect(result.captured.first, "test");
     });
 
-    test('should process AnchorElements which has target set to _blank, _self, _top or _parent', () {
-      MockMouseEvent mockMouseEvent = _createMockMouseEvent(anchorHref: '#test',
-          anchorTarget: '_blank');
+    test(
+        'should process AnchorElements which has target set to _blank, _self, _top or _parent',
+        () {
+      MockMouseEvent mockMouseEvent =
+          _createMockMouseEvent(anchorHref: '#test', anchorTarget: '_blank');
       linkHandler(mockMouseEvent);
 
-      mockMouseEvent = _createMockMouseEvent(anchorHref: '#test',
-          anchorTarget: '_self');
+      mockMouseEvent =
+          _createMockMouseEvent(anchorHref: '#test', anchorTarget: '_self');
       linkHandler(mockMouseEvent);
 
-      mockMouseEvent = _createMockMouseEvent(anchorHref: '#test',
-          anchorTarget: '_top');
+      mockMouseEvent =
+          _createMockMouseEvent(anchorHref: '#test', anchorTarget: '_top');
       linkHandler(mockMouseEvent);
 
-      mockMouseEvent = _createMockMouseEvent(anchorHref: '#test',
-          anchorTarget: '_parent');
+      mockMouseEvent =
+          _createMockMouseEvent(anchorHref: '#test', anchorTarget: '_parent');
       linkHandler(mockMouseEvent);
 
       // We expect 0 calls to router.gotoUrl
@@ -109,7 +115,8 @@ main() {
       anchor.dispatchEvent(new MouseEvent('click'));
     });
 
-    test('should be called if event triggerd on child of an anchor element', () {
+    test('should be called if event triggerd on child of an anchor element',
+        () {
       Element anchorChild = new DivElement();
       AnchorElement anchor = new AnchorElement();
       anchor.href = '#test';
